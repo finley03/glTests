@@ -36,13 +36,13 @@ void main() {
 	// create multiplier for diffuse scattering. Two vectors are dot producted together and
 	// if the value < 0 it is discarded, you can't have a negative light value
 	float diffMultiplier = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = lightColor * (diffMultiplier * material.diffuse);
+	vec3 diffuse = lightColor * diffMultiplier * material.diffuse;
 
 	// create multiplier for specular reflections. compares the vector from the camer to the
 	// fragment and the reflection vector like in diffuse, but also raises it to a power to
 	// simulate the smoothness of the surface
 	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
-	vec3 specular = lightColor * (specMultiplier * material.specular);
+	vec3 specular = lightColor * specMultiplier * material.specular;
 
 //	vec3 outColor = objectColor * (ambient + diffuse + specular);
 	vec3 outColor = ambient + diffuse + specular;
