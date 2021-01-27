@@ -27,6 +27,6 @@ The files need to include:
 
 Polygonal face elements need to be in the format:
     
-    **v/vn/vt**
+    f v/vn/vt
 
 .mtl files are not yet supported, although they will not cause an error.
