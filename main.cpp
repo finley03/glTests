@@ -355,14 +355,23 @@ int main(int argc, char* argv[])
     objectShader.vec3("material.diffuse", material.diffuse);
     objectShader.vec3("material.specular", material.specular);
     objectShader.setFloat("material.smoothness", material.smoothness);
+    objectShader.setUint("nrPointLights", 2);
 
-    objectShader.vec3("light.ambient", light.ambient);
-    objectShader.vec3("light.diffuse", light.diffuse);
-    objectShader.vec3("light.specular", light.specular);
-    objectShader.vec3("light.position", light.position);
-    objectShader.setFloat("light.a", light.a);
-    objectShader.setFloat("light.b", light.b);
-    objectShader.setFloat("light.c", light.c);
+    objectShader.vec3("light[0].ambient", light.ambient);
+    objectShader.vec3("light[0].diffuse", light.diffuse);
+    objectShader.vec3("light[0].specular", light.specular);
+    objectShader.vec3("light[0].position", light.position);
+    objectShader.setFloat("light[0].a", light.a);
+    objectShader.setFloat("light[0].b", light.b);
+    objectShader.setFloat("light[0].c", light.c);
+
+    objectShader.vec3("light[1].ambient", light.ambient);
+    objectShader.vec3("light[1].diffuse", light.diffuse);
+    objectShader.vec3("light[1].specular", light.specular);
+    objectShader.vec3("light[1].position", light.position1);
+    objectShader.setFloat("light[1].a", light.a);
+    objectShader.setFloat("light[1].b", light.b);
+    objectShader.setFloat("light[1].c", light.c);
 
 
 

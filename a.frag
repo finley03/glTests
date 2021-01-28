@@ -41,7 +41,8 @@ uniform uint nrPointLights;
 uniform uint nrDirLights;
 
 uniform Material material;
-uniform Light light;
+uniform Light light[16];
+uniform DirLight dirlight;
 
 //uniform sampler2D texture0;
 
@@ -57,32 +58,40 @@ vec3 calcDirLight(DirLight light);
 
 
 void main() {
-	vec3 norm = normalize(Normal); // create normalized vertex normal
-	vec3 lightDir = normalize(light.position - FragPos); // create normalized light direction vector
-	vec3 cameraDir = normalize(cameraPos - FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
+	norm = normalize(Normal); // create normalized vertex normal
+//	vec3 lightDir = normalize(light.position - FragPos); // create normalized light direction vector
+	cameraDir = normalize(cameraPos - FragPos);
+//	vec3 reflectDir = reflect(-lightDir, norm);
 	// the vector points from the fragment to the light source, because it will
 	// be compared to the normalized vertex normal that points away from the vertex
 
 	// calculate light intensity
-	float dist = length(light.position - FragPos);
-	float intensity = 1.0 / (light.a * dist*dist + light.b * dist + light.c);
+//	float dist = length(light.position - FragPos);
+//	float intensity = 1.0 / (light.a * dist*dist + light.b * dist + light.c);
+//
+//	vec3 ambient = light.ambient * material.ambient; // create ambient fragment color
+//
+//	// create multiplier for diffuse scattering. Two vectors are dot producted together and
+//	// if the value < 0 it is discarded, you can't have a negative light value
+//	float diffMultiplier = max(dot(norm, lightDir), 0.0);
+//	vec3 diffuse = light.diffuse * material.diffuse * diffMultiplier;
+//
+//	// create multiplier for specular reflections. compares the vector from the camer to the
+//	// fragment and the reflection vector like in diffuse, but also raises it to a power to
+//	// simulate the smoothness of the surface
+//	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
+//	vec3 specular = light.specular * material.specular * specMultiplier;
+//
+////	vec3 outColor = objectColor * (ambient + diffuse + specular);
+//	vec3 outColor = (ambient + diffuse + specular) * intensity;
 
-	vec3 ambient = light.ambient * material.ambient; // create ambient fragment color
+	vec3 outColor;
 
-	// create multiplier for diffuse scattering. Two vectors are dot producted together and
-	// if the value < 0 it is discarded, you can't have a negative light value
-	float diffMultiplier = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * material.diffuse * diffMultiplier;
+	if (nrDirLights > 0)
+		outColor += calcDirLight(dirlight);
 
-	// create multiplier for specular reflections. compares the vector from the camer to the
-	// fragment and the reflection vector like in diffuse, but also raises it to a power to
-	// simulate the smoothness of the surface
-	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
-	vec3 specular = light.specular * material.specular * specMultiplier;
-
-//	vec3 outColor = objectColor * (ambient + diffuse + specular);
-	vec3 outColor = (ambient + diffuse + specular) * intensity;
+	for (uint i = 0; i < nrPointLights; ++i)
+		outColor += calcPointLight(light[i]);
 
 	FragColor = vec4(outColor, 1.0);
 
