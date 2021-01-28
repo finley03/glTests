@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <map>
 #include "obj.h"
 
 // Generates triangle mesh suitable for glDrawArrays ie there are no incices
@@ -13,6 +14,7 @@ std::vector<float> genMeshFromFile(const char* filePath, int &success, int &size
         std::cout << "Error: Failed to find file \"" << filePath << "\"\n";
         success = false; // sets success variable to false to check later
     }
+
 
     std::vector<float> vertices; // define data types to add to
     std::vector<float> vertexNormals;
@@ -126,27 +128,265 @@ std::vector<float> genMeshFromFile(const char* filePath, int &success, int &size
     size = vertexIndices.size();
     std::cout << "Size: " << size << " vertices" << std::endl;
 
-    //std::cout << "Vertices:" << std::endl;
-
-    //for (unsigned int i = 0; i < vertices.size(); ++i) {
-    //    std::cout << vertices[i] << std::endl;
-    //}
-
-    //std::cout << "Vertex Indexes:" << std::endl;
-
-    //for (unsigned int i = 0; i < vertexIndices.size(); ++i) {
-    //    std::cout << vertexIndices[i] << std::endl;
-    //}
-
-    //std::cout << "Data:" << std::endl;
-
-    //for (unsigned int i = 0; i < data.size(); ++i) {
-    //    std::cout << data[i] << std::endl;
-    //}
-
     success = true;
 
     return data;
 
 
+}
+
+
+
+std::string getMTLfile(const char* filePath, int& success) {
+    success = false;
+
+    std::ifstream f(filePath); // generates file "f" from the filepath
+    // check if file is open, if not, throw error
+    if (!f.is_open()) {
+        std::cout << "Error: Failed to find file to find mtl \"" << filePath << "\"\n";
+        success = false; // sets success variable to false to check later
+    }
+
+    std::string line;
+
+    while (std::getline(f, line)) { // iterate over lines in file
+        if (line.empty()) continue;
+
+        std::stringstream ss(line); // create stringstream from line data
+        std::vector<std::string> linevec; // create string vector
+        std::string tmp; // create temporary string for getline function
+        while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+            linevec.push_back(tmp); // add tmp to vector
+        }
+
+        if (linevec[0] == "mtllib") {
+            success = true;
+            std::cout << "MTL file name: " << linevec[1] << std::endl;
+            return linevec[1].c_str();
+        }
+        else if (linevec[0] == "usemtl") {
+            std::cout << "Couldn't find file for material \"" << linevec[1] << "\"" << std::endl;
+            return "";
+        }
+
+    }
+
+    std::cout << "No mtl file found, using default parameters" << std::endl;
+    return "";
+}
+
+
+
+std::vector<OBJmaterial> getMatData(const char* filePath, int& success) {
+    int mtlsuccess;
+    std::string mtl = getMTLfile(filePath, mtlsuccess);
+    if (!success) {
+        // use default values
+    }
+
+
+    std::vector<OBJmaterial> materials;
+
+    std::string mtlFilePath = "assets/" + mtl;
+
+
+    std::ifstream m(mtlFilePath); // generates mtl file "m" from the filepath
+    // check if file is open, if not, throw error
+    if (!m.is_open()) {
+        std::cout << "Error: Failed to find mtl file for data \"" << mtlFilePath << "\"\n";
+        success = false; // sets success variable to false to check later
+        materials.push_back(OBJmaterial());
+        return materials;
+    }
+    
+
+
+    int materialIndex = -1; // material index starts at -1 because it is incremented before the first element is added
+
+
+    std::string line;
+
+    while (std::getline(m, line)) { // iterate over lines in file
+        if (line.empty()) continue;
+
+        std::stringstream ss(line); // create stringstream from line data
+        std::vector<std::string> linevec; // create string vector
+        std::string tmp; // create temporary string for getline function
+        while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+            linevec.push_back(tmp); // add tmp to vector
+        }
+        
+        if (linevec[0] == "newmtl") {
+            ++materialIndex;
+            materials.push_back(OBJmaterial());
+            continue;
+        }
+        else if (linevec[0] == "Ka") {
+            materials[materialIndex].ambient[0] = std::stof(linevec[1]);
+            materials[materialIndex].ambient[1] = std::stof(linevec[2]);
+            materials[materialIndex].ambient[2] = std::stof(linevec[3]);
+            continue;
+        }
+        else if (linevec[0] == "Kd") {
+            materials[materialIndex].diffuse[0] = std::stof(linevec[1]);
+            materials[materialIndex].diffuse[1] = std::stof(linevec[2]);
+            materials[materialIndex].diffuse[2] = std::stof(linevec[3]);
+            continue;
+        }
+        else if (linevec[0] == "Ks") {
+            materials[materialIndex].specular[0] = std::stof(linevec[1]);
+            materials[materialIndex].specular[1] = std::stof(linevec[2]);
+            materials[materialIndex].specular[2] = std::stof(linevec[3]);
+            continue;
+        }
+        else if (linevec[0] == "Ns") {
+            materials[materialIndex].smoothness = std::stof(linevec[1]);
+        }
+        else if (linevec[0] == "map_Ka") {
+            materials[materialIndex].ambientFile = ("assets/" + linevec[1]).c_str();
+            materials[materialIndex].texture = true;
+        }
+        else if (linevec[0] == "map_Kd") {
+            materials[materialIndex].diffuseFile = ("assets/" + linevec[1]).c_str();
+            //std::cout << "Diffuse map " << linevec[1] << "  " << linevec[1].c_str() << std::endl;
+            materials[materialIndex].texture = true;
+        }
+        else if (linevec[0] == "map_Ks") {
+            materials[materialIndex].specularFile = ("assets/" + linevec[1]).c_str();
+            materials[materialIndex].texture = true;
+        }
+        else if (linevec[0] == "#") {
+            continue;
+        }
+        else {
+            continue;
+        }
+    }
+
+
+
+
+    //std::ifstream f(filePath); // generates file "f" from the filepath
+    //// check if file is open, if not, throw error
+    //if (!f.is_open()) {
+    //    std::cout << "Error: Failed to find file \"" << filePath << "\"\n";
+    //    success = false; // sets success variable to false to check later
+    //}
+
+
+
+    ////std::string line;
+
+    //while (std::getline(f, line)) { // iterate over lines in file
+    //    if (line.empty()) continue;
+
+    //    std::stringstream ss(line); // create stringstream from line data
+    //    std::vector<std::string> linevec; // create string vector
+    //    std::string tmp; // create temporary string for getline function
+    //    while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+    //        linevec.push_back(tmp); // add tmp to vector
+    //    }
+
+
+
+    //}
+
+    for (int i = 0; i < materials.size(); ++i) {
+        std::cout << "Texture? " << materials[i].texture << std::endl;
+    }
+
+    return materials;
+}
+
+
+
+std::vector<unsigned int> getMatIndexes(const char* filePath, int& success) {
+    int mtlsuccess;
+    std::string mtl = getMTLfile(filePath, mtlsuccess);
+    if (!success) {
+        // use default values
+    }
+
+    std::string mtlFilePath = "assets/" + mtl;
+
+    //std::vector<std::string> materials;
+    std::map<std::string, unsigned int> materials;
+
+    std::ifstream m(mtlFilePath); // generates mtl file "m" from the filepath
+    // check if file is open, if not, throw error
+    if (!m.is_open()) {
+        std::cout << "Error: Failed to find mtl file \"" << mtlFilePath << "\"\n";
+        success = false; // sets success variable to false to check later
+    }
+
+
+    // add all material names in order to std::vector
+
+    std::string line;
+
+    while (std::getline(m, line)) { // iterate over lines in file
+        if (line.empty()) continue;
+
+        std::stringstream ss(line); // create stringstream from line data
+        std::vector<std::string> linevec; // create string vector
+        std::string tmp; // create temporary string for getline function
+        while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+            linevec.push_back(tmp); // add tmp to vector
+        }
+
+        if (linevec[0] == "newmtl") {
+            //materials.push_back(linevec[1]);
+            materials[linevec[1]] = materials.size();
+        }
+    }
+
+
+
+
+    std::ifstream f(filePath); // generates file "f" from the filepath
+    // check if file is open, if not, throw error
+    if (!f.is_open()) {
+        std::cout << "Error: Failed to find obj file \"" << filePath << "\"\n";
+        success = false; // sets success variable to false to check later
+    }
+
+
+
+
+    std::vector<unsigned int> indexes; // material index array, format <start index, material index>
+
+    unsigned int faceIndex = 0;
+
+    while (std::getline(f, line)) { // iterate over lines in file
+        if (line.empty()) continue;
+
+        std::stringstream ss(line); // create stringstream from line data
+        std::vector<std::string> linevec; // create string vector
+        std::string tmp; // create temporary string for getline function
+        while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+            linevec.push_back(tmp); // add tmp to vector
+        }
+
+        if (linevec[0] == "f") {
+            if (linevec.size() >= 4) {
+                faceIndex += (linevec.size() - 3); // increment faceIndex by number of triangles 
+            }
+            else {
+                std::cout << "File \"" << filePath << "\" contains invalid polygons" << std::endl;
+            }
+        }
+        else if (linevec[0] == "usemtl") {
+            indexes.push_back(faceIndex); // push starting index
+            
+            indexes.push_back(materials[linevec[1]]); // push index of material
+        }
+    }
+
+    std::cout << "Indexes" << std::endl;
+    for (int i = 0; i < indexes.size(); ++i) {
+        std::cout << indexes[i] << std::endl;
+    }
+
+
+    return indexes;
 }

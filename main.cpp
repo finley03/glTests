@@ -101,6 +101,7 @@ int main(int argc, char* argv[])
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);
     glDisable(GL_CULL_FACE);
+    //glEnable(GL_MULTISAMPLE);
     //glDepthRange(0.0f, 2.0f);
     //glCullFace(GL_FRONT_AND_BACK);
 
@@ -111,6 +112,9 @@ int main(int argc, char* argv[])
     if (!shaderSuccess) return -1;
 
     Shader lightShader("i.vert", "i.frag", shaderSuccess);
+    if (!shaderSuccess) return -1;
+
+    Shader textureShader("t.vert", "t.frag", shaderSuccess);
     if (!shaderSuccess) return -1;
 
 
@@ -205,13 +209,45 @@ int main(int argc, char* argv[])
 
 
 
+
+
+        //----------SET UP TEXTURES----------//
+
+
+
+
+
+    Texture textures;
+
+    /*textures.newTexture("assets/container2.png", "diffuseTexture", 0, GL_REPEAT, GL_NEAREST);
+    textures.newTexture("assets/container2_specular.png", "specularTexture", 1, GL_REPEAT, GL_NEAREST);*/
+
+    //textures.bind("diffuseTexture", 0);
+    //textures.bind("specularTexture", 1);
+
+
+
+
+
+
+
+
     //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texture attribute
     //glEnableVertexAttribArray(2);
 
 
     Objects objects; // create objects class
+
+    objects.objectShader = &objectShader;
+    objects.textureShader = &textureShader;
+    objects.textures = &textures;
+
     objects.createFromFile("assets/MaleLow.obj", "thing"); // create objects
-    objects.createFromFile("assets/cube.obj", "light"); // filepath, name
+    objects.createFromFile("assets/cube.obj", "light0"); // filepath, name
+    objects.createFromFile("assets/cube.obj", "light1");
+    objects.createFromFile("assets/cube2.obj", "cube");
+
+    //textures.bind("assets/container2.png", 0);
     //objects.createFromFile("cube.obj", "cube");
     //objects.createFromFile("BrandenburgGate.obj", "building");
 
@@ -219,34 +255,34 @@ int main(int argc, char* argv[])
 
 
 
-    //----------SET UP TEXTURES----------//
 
 
 
 
-    //Texture textures; // create texture class
 
-    //textures.newTexture("wall.jpg", "texture0", 0, GL_REPEAT, GL_LINEAR);
-    ////textures.newTexture("bolsonaro.bmp", "texture1", 1, GL_REPEAT, GL_NEAREST);
-
-    //textures.bind("texture0", 0);
-    ////textures.bind("texture1", 1);
-
-    //shaders.use();
-
-    //shaders.setInt("texture0", 0); // set texture to texture unit 0
-    ////shaders.setInt("texture1", 1); // set texture to texture unit 1
-
-    //float objectColor[] = { 0.1f, 0.1f, 0.8f };
     float lightColor[] = { 1.0f, 1.0f, 1.0f }; // test lighting and material colors
 
-    float ambientColor[] = { 0.02f, 0.02f, 0.1f };
-    float diffuseColor[] = { 0.f, 0.1f, 0.4f };
-    float specularColor[] = { 0.2f, 0.2f, 0.2f };
-    float smoothness = 32.0f; // a higher number leads to smaller radius specular reflections
+    struct Light {
+        float ambient[3] = { 0.05f, 0.05f, 0.05f };
+        float diffuse[3] = { 0.7f, 0.7f, 0.7f };
+        float specular[3] = { 1.0f, 1.0f, 1.0f };
+        float position[3] = { 12.0f, 24.0f, 5.0f };
+        float position1[3] = { 12.0f, 4.0f, 5.0f };
 
+        float a = 0.00007f;
+        float b = 0.0014f;
+        float c = 1.0f;
+    };
 
-    //lightShader.use();
+    struct Material {
+        float ambient[3] = { 0.02f, 0.02f, 0.02f };
+        float diffuse[3] = { 0.1f, 0.1f, 1.0f };
+        float specular[3] = { 0.5f, 0.5f, 0.5f };
+        float smoothness = 32.0f; // a higher number leads to smaller radius specular reflections
+    };
+
+    Material material;
+    Light light;
     
 
 
@@ -292,9 +328,10 @@ int main(int argc, char* argv[])
     //lightShader.use();
     
 
-    float lightPosition[3] = { 12.0f, 24.0f, 5.0f };
+    //float lightPosition[3] = { 12.0f, 24.0f, 5.0f };
 
-    glm::mat4 lightMatrix = glm::translate(Identity, glm::make_vec3(lightPosition));
+    glm::mat4 lightMatrix = glm::translate(Identity, glm::make_vec3(light.position));
+    glm::mat4 lightMatrix1 = glm::translate(Identity, glm::make_vec3(light.position1));
 
 
 
@@ -306,22 +343,62 @@ int main(int argc, char* argv[])
 
     objectShader.use();
     //objectShader.vec3("objectColor", objectColor);
-    objectShader.vec3("lightColor", lightColor);
+    objectShader.vec3("lightColor", light.diffuse);
 
     objectShader.mat4("view", glm::value_ptr(view));
     objectShader.mat4("projection", glm::value_ptr(projection));
 
-    objectShader.vec3("lightPos", lightPosition);
+    //objectShader.vec3("lightPos", light.position);
     objectShader.vec3("cameraPos", cameraPosition);
 
-    objectShader.vec3("material.ambient", ambientColor);
-    objectShader.vec3("material.diffuse", diffuseColor);
-    objectShader.vec3("material.specular", specularColor);
-    objectShader.setFloat("material.smoothness", smoothness);
+    objectShader.vec3("material.ambient", material.ambient);
+    objectShader.vec3("material.diffuse", material.diffuse);
+    objectShader.vec3("material.specular", material.specular);
+    objectShader.setFloat("material.smoothness", material.smoothness);
+
+    objectShader.vec3("light.ambient", light.ambient);
+    objectShader.vec3("light.diffuse", light.diffuse);
+    objectShader.vec3("light.specular", light.specular);
+    objectShader.vec3("light.position", light.position);
+    objectShader.setFloat("light.a", light.a);
+    objectShader.setFloat("light.b", light.b);
+    objectShader.setFloat("light.c", light.c);
+
+
+
+    textureShader.use();
+    textureShader.vec3("lightColor", light.diffuse);
+
+    textureShader.mat4("view", glm::value_ptr(view));
+    textureShader.mat4("projection", glm::value_ptr(projection));
+
+    textureShader.vec3("cameraPos", cameraPosition);
+
+    textureShader.setInt("material.diffuse", 0);
+    textureShader.setInt("material.specular", 1);
+    textureShader.setFloat("material.smoothness", material.smoothness);
+    textureShader.setUint("nrPointLights", 2);
+
+    textureShader.vec3("light[0].ambient", light.ambient);
+    textureShader.vec3("light[0].diffuse", light.diffuse);
+    textureShader.vec3("light[0].specular", light.specular);
+    textureShader.vec3("light[0].position", light.position);
+    textureShader.setFloat("light[0].a", light.a);
+    textureShader.setFloat("light[0].b", light.b);
+    textureShader.setFloat("light[0].c", light.c);
+
+    textureShader.vec3("light[1].ambient", light.ambient);
+    textureShader.vec3("light[1].diffuse", light.diffuse);
+    textureShader.vec3("light[1].specular", light.specular);
+    textureShader.vec3("light[1].position", light.position1);
+    textureShader.setFloat("light[1].a", light.a);
+    textureShader.setFloat("light[1].b", light.b);
+    textureShader.setFloat("light[1].c", light.c);
+
 
 
     lightShader.use();
-    lightShader.vec3("lightColor", lightColor);
+    lightShader.vec3("lightColor", light.specular);
 
     lightShader.mat4("view", glm::value_ptr(view));
     lightShader.mat4("projection", glm::value_ptr(projection));
@@ -385,13 +462,18 @@ int main(int argc, char* argv[])
 
         model = glm::translate(Identity, glm::vec3(-10.0f, 0.0f, 0.0f));
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
+        //model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+        textureShader.use();
+        textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();
         objectShader.mat4("model", glm::value_ptr(model));
         objects.draw("thing");
 
         lightShader.use();
         lightShader.mat4("model", glm::value_ptr(lightMatrix));
-        objects.draw("light");
+        objects.drawLight("light0");
+        lightShader.mat4("model", glm::value_ptr(lightMatrix1));
+        objects.drawLight("light1");
 
         SDL_GL_SwapWindow(window);
 
@@ -417,6 +499,7 @@ int main(int argc, char* argv[])
     objects.destroy("cube");
     objects.terminate();
     objectShader.close();
+    textureShader.close();
     lightShader.close();
     window = nullptr;
     renderer = nullptr;
@@ -475,6 +558,10 @@ int init() {
 
 
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // increase default depth test bits, 16 is too low
+
+    // enable antialiasing
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
 
     // unfortunately windows is annoying because no opengl features over 1.1 are included by default

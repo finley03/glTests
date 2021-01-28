@@ -29,7 +29,7 @@ int Texture::colorSpace(int nrChannels, int& variable) {
 }
 
 
-int Texture::newTexture(const char* fileName, const char* varName, int textureUnit, int textureWrap, int textureFilter) {
+int Texture::newTexture(const char* fileName, std::string varName, int textureUnit, int textureWrap, int textureFilter) {
     glActiveTexture(GL_TEXTURE0 + textureUnit); // set active texture unit
 
     unsigned int texture; // create texture variable
@@ -52,6 +52,7 @@ int Texture::newTexture(const char* fileName, const char* varName, int textureUn
     if (data) { // add data to texture
         glTexImage2D(GL_TEXTURE_2D, 0, cSpace, texWidth, texHeight, 0, cSpace, GL_UNSIGNED_BYTE, data); //generate textures
         glGenerateMipmap(GL_TEXTURE_2D);
+        std::cout << "Loaded texture \"" << varName << "\" from file \"" << fileName << "\"" << std::endl;
     }
     else {
         std::cout << "Texture failed to load" << std::endl;
@@ -69,11 +70,11 @@ void Texture::active(int textureUnit) {
     glActiveTexture(GL_TEXTURE0 + textureUnit);
 }
 
-void Texture::bind(const char* varName) {
+void Texture::bind(std::string varName) {
     glBindTexture(GL_TEXTURE_2D, textures[varName]);
 }
 
-void Texture::bind(const char* varName, int textureUnit) {
+void Texture::bind(std::string varName, int textureUnit) {
     glActiveTexture(GL_TEXTURE0 + textureUnit);
     glBindTexture(GL_TEXTURE_2D, textures[varName]);
 }

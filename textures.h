@@ -2,6 +2,7 @@
 #define TEXTURES_H
 
 #include <map>
+#include <string>
 
 class Texture {
 public:
@@ -10,7 +11,7 @@ public:
 	// create new texture from file. add variable name
 	int newTexture(
 		const char* fileName,
-		const char* varName,
+		std::string varName,
 		int textureUnit,
 		int textureWrap,
 		int textureFilter
@@ -20,12 +21,12 @@ public:
 	void active(int textureUnit);
 
 	// bind texture to current texture unit
-	void bind(const char* varName);
-	void bind(const char* varName, int textureUnit);
+	void bind(std::string varName);
+	void bind(std::string varName, int textureUnit);
 
 
 private:
-	std::map<const char*, int> textures;
+	std::map<std::string, int> textures;
 
 	int colorSpace(int nrChannels, int& variable);
 
