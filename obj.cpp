@@ -162,14 +162,18 @@ std::string getMTLfile(const char* filePath, int& success) {
         if (linevec[0] == "mtllib") {
             success = true;
             std::cout << "MTL file name: " << linevec[1] << std::endl;
+            //f.close();
             return linevec[1].c_str();
         }
         else if (linevec[0] == "usemtl") {
             std::cout << "Couldn't find file for material \"" << linevec[1] << "\"" << std::endl;
+            //f.close();
             return "";
         }
 
     }
+
+    f.close();
 
     std::cout << "No mtl file found, using default parameters" << std::endl;
     return "";
@@ -223,6 +227,7 @@ std::vector<OBJmaterial> getMatData(const char* filePath, int& success) {
         }
         else if (linevec[0] == "Ka") {
             materials[materialIndex].ambient[0] = std::stof(linevec[1]);
+            materials[materialIndex].ambient[0] = std::stof(linevec[1]);
             materials[materialIndex].ambient[1] = std::stof(linevec[2]);
             materials[materialIndex].ambient[2] = std::stof(linevec[3]);
             continue;
@@ -263,7 +268,7 @@ std::vector<OBJmaterial> getMatData(const char* filePath, int& success) {
         }
     }
 
-
+    m.close();
 
 
     //std::ifstream f(filePath); // generates file "f" from the filepath
@@ -291,9 +296,6 @@ std::vector<OBJmaterial> getMatData(const char* filePath, int& success) {
 
     //}
 
-    for (int i = 0; i < materials.size(); ++i) {
-        std::cout << "Texture? " << materials[i].texture << std::endl;
-    }
 
     return materials;
 }
@@ -340,6 +342,8 @@ std::vector<unsigned int> getMatIndexes(const char* filePath, int& success) {
         }
     }
 
+    m.close();
+
 
 
 
@@ -382,10 +386,12 @@ std::vector<unsigned int> getMatIndexes(const char* filePath, int& success) {
         }
     }
 
-    std::cout << "Indexes" << std::endl;
-    for (int i = 0; i < indexes.size(); ++i) {
-        std::cout << indexes[i] << std::endl;
-    }
+    f.close();
+
+    //std::cout << "Indexes" << std::endl;
+    //for (int i = 0; i < indexes.size(); ++i) {
+    //    std::cout << indexes[i] << std::endl;
+    //}
 
 
     return indexes;

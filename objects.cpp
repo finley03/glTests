@@ -82,14 +82,10 @@ int Objects::createFromFile(const char* filePath, std::string name) {
 	shapeMap[name] = shapes.size(); // add object to shape map
 	shapes.push_back(object); // add object to shapes struct
 
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // vertex attribute pointer
-	//glEnableVertexAttribArray(0);
+	// clean up memory
 
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // vertex normal attribute pointer
-	//glEnableVertexAttribArray(1);
-
-	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texture attribute pointer
-	//glEnableVertexAttribArray(2);
+	mesh.clear();
+	mesh.shrink_to_fit();
 
 	return true;
 
@@ -98,16 +94,16 @@ int Objects::createFromFile(const char* filePath, std::string name) {
 
 void Objects::draw(std::string name) {
 
-	glBindBuffer(GL_ARRAY_BUFFER, shapes[shapeMap[name]].VBO); // bind vbo of shape
+	//glBindBuffer(GL_ARRAY_BUFFER, shapes[shapeMap[name]].VBO); // bind vbo of shape
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // vertex attribute pointer
-	glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // vertex attribute pointer
+	//glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // vertex normal attribute pointer
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // vertex normal attribute pointer
+	//glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texture attribute pointer
-	glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texture attribute pointer
+	//glEnableVertexAttribArray(2);
 
 	//int totalVertices = 0;
 
@@ -166,8 +162,11 @@ void Objects::draw(std::string name) {
 			////std::cout << "TexName " << shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].diffuseTextureName.c_str() << std::endl;
 			textures->bind(shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].specularTextureName.c_str(), 1);
 			//textures->bind("assets/container2.png", 0);
-			textureShader->setInt("material.diffuse", 0);
-			textureShader->setInt("material.specular", 1);
+			textureShader->vec3("material.ambient", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].ambient);
+			textureShader->vec3("material.diffuse", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].diffuse);
+			textureShader->vec3("material.specular", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].specular);
+			textureShader->setInt("material.diffusetex", 0);
+			textureShader->setInt("material.speculartex", 1);
 
 
 

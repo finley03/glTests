@@ -101,9 +101,15 @@ int main(int argc, char* argv[])
     glDepthFunc(GL_LEQUAL);
     glDepthMask(GL_TRUE);
     glDisable(GL_CULL_FACE);
-    //glEnable(GL_MULTISAMPLE);
+    //glCullFace(GL_FRONT);
+    glEnable(GL_MULTISAMPLE);
     //glDepthRange(0.0f, 2.0f);
     //glCullFace(GL_FRONT_AND_BACK);
+    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+    //glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_POLYGON_SMOOTH);
 
 
     // create shader programs
@@ -242,7 +248,7 @@ int main(int argc, char* argv[])
     objects.textureShader = &textureShader;
     objects.textures = &textures;
 
-    objects.createFromFile("assets/MaleLow.obj", "thing"); // create objects
+    objects.createFromFile("assets/backpack.obj", "thing"); // create objects
     objects.createFromFile("assets/cube.obj", "light0"); // filepath, name
     objects.createFromFile("assets/cube.obj", "light1");
     objects.createFromFile("assets/cube2.obj", "cube");
@@ -442,6 +448,10 @@ int main(int argc, char* argv[])
                     wWidth = event.window.data1;
                     wHeight = event.window.data2;
                     glViewport(0, 0, wWidth, wHeight);
+                    //projection = glm::perspective(glm::radians(45.0f), (float)wWidth / wHeight, 3.0f, 100.0f);
+                    //textureShader.mat4("projection", glm::value_ptr(projection));
+                    //objectShader.mat4("projection", glm::value_ptr(projection));
+                    //lightShader.mat4("projection", glm::value_ptr(projection));
                     SDL_GL_SwapWindow(window);
                     break;
 
@@ -469,9 +479,9 @@ int main(int argc, char* argv[])
         // draw objects
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        model = glm::translate(Identity, glm::vec3(-10.0f, 0.0f, 0.0f));
+        model = glm::translate(Identity, glm::vec3(-10.0f, 10.0f, 0.0f));
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
-        //model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
         textureShader.use();
         textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();
@@ -535,6 +545,11 @@ int init() {
     }
 
 
+    // enable antialiasing
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+
+
     window = SDL_CreateWindow(
         TITLE, // window title
         SDL_WINDOWPOS_CENTERED, // window X pos
@@ -563,14 +578,13 @@ int init() {
         std::cout << "SDL created hardware renderer\n";
     }
 
+
     gl_ctx = SDL_GL_CreateContext(window); // create opengl context with sdl
 
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // increase default depth test bits, 16 is too low
+    //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); // increase default depth test bits, 16 is too low
 
-    // enable antialiasing
-    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-    //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+
 
 
     // unfortunately windows is annoying because no opengl features over 1.1 are included by default

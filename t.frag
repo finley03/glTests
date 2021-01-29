@@ -6,8 +6,11 @@
 
 struct Material {
 //	vec3 ambient; // glsl uses semicolons?
-	sampler2D diffuse;
-	sampler2D specular;
+	sampler2D diffusetex;
+	sampler2D speculartex;
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 	float smoothness;
 };
 
@@ -112,7 +115,7 @@ vec3 calcPointLight(Light light) {
 	vec3 lightDir = normalize(light.position - FragPos); // create normalized light direction vector
 	vec3 reflectDir = reflect(-lightDir, norm);
 
-	vec3 ambient = light.ambient * texture(material.diffuse, texCoord).rgb; // create ambient fragment color
+	vec3 ambient = light.ambient * material.ambient * texture(material.diffusetex, texCoord).rgb; // create ambient fragment color
 	
 	// calculate light intensity
 	float dist = length(light.position - FragPos);
@@ -121,13 +124,13 @@ vec3 calcPointLight(Light light) {
 	// create multiplier for diffuse scattering. Two vectors are dot producted together and
 	// if the value < 0 it is discarded, you can't have a negative light value
 	float diffMultiplier = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * diffMultiplier * texture(material.diffuse, texCoord).rgb;
+	vec3 diffuse = light.diffuse * diffMultiplier * material.diffuse * texture(material.diffusetex, texCoord).rgb;
 
 	// create multiplier for specular reflections. compares the vector from the camer to the
 	// fragment and the reflection vector like in diffuse, but also raises it to a power to
 	// simulate the smoothness of the surface
 	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
-	vec3 specular = light.specular * specMultiplier * texture(material.specular, texCoord).rgb;
+	vec3 specular = light.specular * specMultiplier * material.specular * texture(material.speculartex, texCoord).rgb;
 
 //	vec3 outColor = objectColor * (ambient + diffuse + specular);
 	vec3 outColor = (ambient + diffuse + specular) * intensity;
@@ -142,18 +145,18 @@ vec3 calcDirLight(DirLight light) {
 	vec3 lightDir = normalize(-light.direction); // create normalized light direction vector
 	vec3 reflectDir = reflect(-lightDir, norm);
 
-	vec3 ambient = light.ambient * texture(material.diffuse, texCoord).rgb; // create ambient fragment color
+	vec3 ambient = light.ambient * material.ambient * texture(material.diffusetex, texCoord).rgb; // create ambient fragment color
 
 	// create multiplier for diffuse scattering. Two vectors are dot producted together and
 	// if the value < 0 it is discarded, you can't have a negative light value
 	float diffMultiplier = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * diffMultiplier * texture(material.diffuse, texCoord).rgb;
+	vec3 diffuse = light.diffuse * diffMultiplier * material.diffuse * texture(material.diffusetex, texCoord).rgb;
 
 	// create multiplier for specular reflections. compares the vector from the camer to the
 	// fragment and the reflection vector like in diffuse, but also raises it to a power to
 	// simulate the smoothness of the surface
 	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
-	vec3 specular = light.specular * specMultiplier * texture(material.specular, texCoord).rgb;
+	vec3 specular = light.specular * specMultiplier * material.specular * texture(material.speculartex, texCoord).rgb;
 
 //	vec3 outColor = objectColor * (ambient + diffuse + specular);
 	vec3 outColor = ambient + diffuse + specular;

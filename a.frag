@@ -2,7 +2,7 @@
 
 
 struct Material {
-	vec3 ambient; // glsl uses semicolons?
+	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 	float smoothness;
