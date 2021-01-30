@@ -23,7 +23,7 @@ public:
 
 	Objects();
 
-	int createFromFile(const char* filePath, std::string name);
+	int createFromFile(std::string filePath, std::string name);
 
 	void draw(std::string name);
 

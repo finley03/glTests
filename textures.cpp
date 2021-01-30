@@ -1,8 +1,8 @@
 #include <glad/glad.h>
 
 #include <iostream>
-
 #include "textures.h"
+#include "terminalColors.h"
 
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -23,13 +23,15 @@ int Texture::colorSpace(int nrChannels, int& variable) {
         return true;
 
     default:
-        std::cout << "Error: Texture uses unsupported colorspace code " << nrChannels << std::endl;
+        std::cout << color::error << "Error: Texture uses unsupported colorspace code " << nrChannels << color::std << std::endl;
         return false;
     }
 }
 
 
 int Texture::newTexture(const char* fileName, std::string varName, int textureUnit, int textureWrap, int textureFilter) {
+    std::cout << "Loading texture " << color::file << "\"" << fileName << "\"" << color::std << std::endl;
+
     glActiveTexture(GL_TEXTURE0 + textureUnit); // set active texture unit
 
     unsigned int texture; // create texture variable
@@ -52,10 +54,9 @@ int Texture::newTexture(const char* fileName, std::string varName, int textureUn
     if (data) { // add data to texture
         glTexImage2D(GL_TEXTURE_2D, 0, cSpace, texWidth, texHeight, 0, cSpace, GL_UNSIGNED_BYTE, data); //generate textures
         glGenerateMipmap(GL_TEXTURE_2D);
-        std::cout << "Loaded texture \"" << varName << "\" from file \"" << fileName << "\"" << std::endl;
     }
     else {
-        std::cout << "Texture failed to load" << std::endl;
+        std::cout << color::error << "Texture failed to load" << color::std << std::endl;
     }
     stbi_image_free(data); // free memory
 

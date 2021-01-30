@@ -16,12 +16,6 @@
 
 
 
-
-
-
-
-
-
 #include <iostream>
 #include <string>
 //#include <fstream> // file operations
@@ -38,6 +32,7 @@
 #include "textures.h"
 #include "objects.h"
 #include "obj.h"
+#include "terminalColors.h"
 
 
 //#define STB_IMAGE_IMPLEMENTATION
@@ -93,23 +88,7 @@ int main(int argc, char* argv[])
 
 
 
-    glViewport(0, 0, wWidth, wHeight); // set opengl viewport size
-    glClearColor(0.1, 0.1, 0.1, 1); // 0 red, 0 green, 0 blue, 1 alpha - 100% opacity
 
-
-    glEnable(GL_DEPTH_TEST); // some opengl rendering settings
-    glDepthFunc(GL_LEQUAL);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_CULL_FACE);
-    //glCullFace(GL_FRONT);
-    glEnable(GL_MULTISAMPLE);
-    //glDepthRange(0.0f, 2.0f);
-    //glCullFace(GL_FRONT_AND_BACK);
-    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-    //glEnable(GL_LINE_SMOOTH);
-    //glEnable(GL_POLYGON_SMOOTH);
 
 
     // create shader programs
@@ -125,96 +104,6 @@ int main(int argc, char* argv[])
 
 
 
-    // set up objects
-
-    /*int meshsuccess;
-    genMeshFromFile("cube.obj", meshsuccess);
-    if (!meshsuccess) std::cout << "Could not find file" << std::endl;*/
-
-    //std::vector<float> vertices = {
-    //    0.5, -0.5f, -0.5f, 1.0f, 0.0f, // bottom right // vertices[3], textures[2] square
-    //    -0.5, -0.5f, -0.5f, 0.0f, 0.0f, // bottom left
-    //    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, // top left
-    //    0.5f, 0.5f, -0.5f, 1.0f, 1.0f, // top right
-
-    //    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-    //    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-    //    0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-    //    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-
-    //    0.5, -0.5f, 0.5f, 1.0f, 0.0f,
-    //    -0.5, -0.5f, 0.5f, 0.0f, 0.0f,
-    //    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-    //    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-
-    //    -0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-    //    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-    //    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-    //    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-
-    //    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-    //    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-    //    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-    //    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-
-    //    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-    //    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-    //    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-    //    0.5f, -0.5f, -0.5f, 1.0f, 1.0f
-    //};
-
-    ////float* vertexPointer = vertices;
-
-    //unsigned int indices[] = {
-    //    0, 1, 2,
-    //    2, 3, 0,
-
-    //    4, 5, 6,
-    //    6, 7, 4,
-
-    //    8, 9, 10,
-    //    10, 11, 8,
-
-    //    12, 13, 14,
-    //    14, 15, 12,
-
-    //    16, 17, 18,
-    //    18, 19, 16,
-
-    //    20, 21, 22,
-    //    22, 23, 20
-    //};
-
-
-
-
-    //unsigned int VAO, VBO, EBO;
-    //glGenVertexArrays(1, &VAO); // create vertex array object
-    //glGenBuffers(1, &VBO); // create vertex buffer object
-    //glGenBuffers(1, &EBO); // create element buffer object
-
-    //// bind VAO
-    //glBindVertexArray(VAO);
-    //// copy data to buffer
-    //glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-
-    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    //// set vertex attribute pointers
-    //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // position attribute
-    //glEnableVertexAttribArray(0);
-
-    //glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float))); // texture attribute
-    //glEnableVertexAttribArray(1);
-
-
-
-
-
-
-
 
 
         //----------SET UP TEXTURES----------//
@@ -225,43 +114,17 @@ int main(int argc, char* argv[])
 
     Texture textures;
 
-    /*textures.newTexture("assets/container2.png", "diffuseTexture", 0, GL_REPEAT, GL_NEAREST);
-    textures.newTexture("assets/container2_specular.png", "specularTexture", 1, GL_REPEAT, GL_NEAREST);*/
-
-    //textures.bind("diffuseTexture", 0);
-    //textures.bind("specularTexture", 1);
-
-
-
-
-
-
-
-
-    //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texture attribute
-    //glEnableVertexAttribArray(2);
-
-
     Objects objects; // create objects class
 
     objects.objectShader = &objectShader;
     objects.textureShader = &textureShader;
     objects.textures = &textures;
 
-    objects.createFromFile("assets/backpack.obj", "thing"); // create objects
-    objects.createFromFile("assets/cube.obj", "light0"); // filepath, name
-    objects.createFromFile("assets/cube.obj", "light1");
-    objects.createFromFile("assets/cube2.obj", "cube");
-
-    //textures.bind("assets/container2.png", 0);
-    //objects.createFromFile("cube.obj", "cube");
-    //objects.createFromFile("BrandenburgGate.obj", "building");
-
-
-
-
-
-
+    //objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
+    objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing"); // create objects
+    objects.createFromFile("assets/cube/cube.obj", "light0"); // filepath, name
+    objects.createFromFile("assets/cube/cube.obj", "light1");
+    objects.createFromFile("assets/cube/cube2.obj", "cube");
 
 
 
@@ -418,6 +281,10 @@ int main(int argc, char* argv[])
     lightShader.mat4("view", glm::value_ptr(view));
     lightShader.mat4("projection", glm::value_ptr(projection));
 
+
+
+    std::cout << color::success << "\nGraphics Loaded!" << color::std << std::endl;
+
     
 
 
@@ -428,6 +295,7 @@ int main(int argc, char* argv[])
 
 
 
+    
 
     bool run = true; // sets variable for loop
     time_t tUnix;
@@ -438,7 +306,7 @@ int main(int argc, char* argv[])
 
             case SDL_QUIT:
                 run = false;
-                std::cout << "Exiting...\n";
+                std::cout << color::process << "Exiting...\n" << color::std;
                 break;
 
             case SDL_WINDOWEVENT:
@@ -456,7 +324,7 @@ int main(int argc, char* argv[])
                     break;
 
                 default:
-                    std::cout << "Unhandled Window Event: " << event.window.type << std::endl;
+                    std::cout << "Unhandled Window Event: " << color::value << event.window.type << color::std << std::endl;
                     break;
 
 
@@ -466,7 +334,7 @@ int main(int argc, char* argv[])
 
 
             default:
-                std::cout << "Unhandled Event: " << event.type << std::endl;
+                std::cout << "Unhandled Event: " << color::value << event.type << color::std << std::endl;
                 break;
 
             }
@@ -479,9 +347,9 @@ int main(int argc, char* argv[])
         // draw objects
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        model = glm::translate(Identity, glm::vec3(-10.0f, 10.0f, 0.0f));
+        model = glm::translate(Identity, glm::vec3(-10.0f, 0.0f, 0.0f));
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+        //model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
         textureShader.use();
         textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();
@@ -536,12 +404,16 @@ int main(int argc, char* argv[])
 
 
 int init() {
+
+    //std::cout << "\033[38;2;255;0;0mRed Text\033[0m\n";
+    //std::cout << color::red << "Red Text" << color::white << std::endl;
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) { // initialise sdl, return error if failed
-        std::cout << "SDL failed to initalise video: " << SDL_GetError() << std::endl;
+        std::cout << color::error << "SDL failed to initalise video: " << SDL_GetError() << std::endl;
         return false;
     }
     else {
-        std::cout << "SDL initialised video\n";
+        std::cout << color::std << "initialised " << color::process << "video...";
     }
 
 
@@ -560,22 +432,22 @@ int init() {
     );
 
     if (!window) { // check window was actually made
-        std::cout << "SDL failed to create window: " << SDL_GetError() << std::endl;
+        std::cout << color::error << "\nSDL failed to create window: " << SDL_GetError() << std::endl;
         return false;
     }
     else {
-        std::cout << "SDL created window\n";
+        std::cout << "window...";
     }
 
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); // create hardware renderer
 
     if (!renderer) { // check renderer created successfully
-        std::cout << "SDL failed to create hardware renderer: " << SDL_GetError() << std::endl;
+        std::cout << color::error << "\nSDL failed to create hardware renderer: " << SDL_GetError() << std::endl;
         return false;
     }
     else {
-        std::cout << "SDL created hardware renderer\n";
+        std::cout << "hardware renderer" << color::std << std::endl;
     }
 
 
@@ -590,31 +462,32 @@ int init() {
     // unfortunately windows is annoying because no opengl features over 1.1 are included by default
     // so loading opengl extensions using glad
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) { // load extensions, raise error if fail
-        std::cout << "Failed to initialise OpenGL context\n";
+        std::cout << color::error << "Failed to initialise OpenGL context\n";
         return false;
     }
     else {
-        std::cout << "OpenGL context created and extensions loaded\n"
-            << "OpenGL Version " << GLVersion.major << "." << GLVersion.minor << std::endl;
+        std::cout << "OpenGL context created - " << color::value << "Version " << GLVersion.major << "." << GLVersion.minor << color::std << "\n" << std::endl;
     }
+
+    glViewport(0, 0, wWidth, wHeight); // set opengl viewport size
+    glClearColor(0.1, 0.1, 0.1, 1); // 0 red, 0 green, 0 blue, 1 alpha - 100% opacity
+
+
+    glEnable(GL_DEPTH_TEST); // some opengl rendering settings
+    glDepthFunc(GL_LEQUAL);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_CULL_FACE);
+    //glCullFace(GL_FRONT);
+    glEnable(GL_MULTISAMPLE);
+    //glDepthRange(0.0f, 2.0f);
+    //glCullFace(GL_FRONT_AND_BACK);
+    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+
+    //glEnable(GL_LINE_SMOOTH);
+    //glEnable(GL_POLYGON_SMOOTH);
 
     return true;
 }
 
 
-//
-//int colorSpace(int nrChannels, int& variable) {
-//    switch (nrChannels) {
-//    case 3:
-//        variable = GL_RGB;
-//        return true;
-//
-//    case 4:
-//        variable = GL_RGBA;
-//        return true;
-//
-//    default:
-//        std::cout << "Error: Texture uses unsupported colorspace code " << nrChannels << std::endl;
-//        return false;
-//    }
-//}

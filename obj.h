@@ -29,10 +29,10 @@ struct OBJmaterial {
 
 //DefaultColorValues defaultcolorvalues;
 
-std::vector<float> genMeshFromFile(const char* filePath, int& success, int& size);
+std::vector<float> genMeshFromFile(std::string filePath, int& success, int& size);
 
-std::vector<OBJmaterial> getMatData(const char* filePath, int& success);
+std::vector<OBJmaterial> getMatData(std::string filePath, int& success);
 
-std::vector<unsigned int> getMatIndexes(const char* filePath, int& success);
+std::vector<unsigned int> getMatIndexes(std::string filePath, int& success);
 
 #endif

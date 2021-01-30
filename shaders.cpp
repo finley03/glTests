@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "shaders.h"
+#include "terminalColors.h"
 
 #define INFOLOG_LENGTH 512
 
@@ -13,7 +14,7 @@
 int readFileToString(const char fileName[], std::string &data) {
     std::ifstream f(fileName); // create filename insta
     if (!f.is_open()) {
-        std::cout << "Error: Failed to find file \"" << fileName << "\"\n";
+        std::cout << color::error << "Error: Failed to find file \"" << fileName << "\"" << color::std << std::endl;
         return false;
     }
     std::stringstream buffer; // create stringstream buffer instance
@@ -38,6 +39,8 @@ Shader::Shader(const char* vsName, const char* fsName, int &success) {
         success = false;
         return;
     }
+
+    std::cout << "Shader: ";
 
     // convert to const char*
     const char* vertexShaderSource = vsSource.c_str();
@@ -68,22 +71,18 @@ Shader::Shader(const char* vsName, const char* fsName, int &success) {
     // if errors tell the user
     if (!vscSuccess) {
         glGetShaderInfoLog(vertexShader, INFOLOG_LENGTH, NULL, vsInfoLog);
-        std::cout << "Error: vertex shader compilation failed:\n" << vsInfoLog << std::endl;
+        std::cout << color::error << "\nError: vertex shader compilation failed:\n" << vsInfoLog << color::std << std::endl;
         success = false;
-    }
-    else {
-        std::cout << "Vertex Shader compiled successfully\n";
     }
     if (!fscSuccess) {
         glGetShaderInfoLog(fragmentShader, INFOLOG_LENGTH, NULL, fsInfoLog);
-        std::cout << "Error: fragment shader compilation failed:\n" << fsInfoLog << std::endl;
+        std::cout << color::error << "\nError: fragment shader compilation failed:\n" << fsInfoLog << color::std << std::endl;
         success = false;
-    }
-    else {
-        std::cout << "Fragment Shader compiled successfully\n";
     }
 
     if (!success) return; // if compilation failed, return AFTER error messages
+
+    std::cout << color::process << "compiled..." << std::flush;
 
 
     // Create Shader Program
@@ -104,12 +103,12 @@ Shader::Shader(const char* vsName, const char* fsName, int &success) {
 
     if (!programSuccess) {
         glGetProgramInfoLog(shaderProgram, INFOLOG_LENGTH, NULL, programInfoLog);
-        std::cout << "Error: Shader Program linking failed:\n" << programInfoLog << std::endl;
+        std::cout << color::error << "\nError: Shader Program linking failed:\n" << programInfoLog << color::std << std::endl;
         success = false;
         return;
     }
     else {
-        std::cout << "Shader Program linked successfully\n";
+        std::cout << color::success << "linked!" << color::std << std::endl;
     }
 
     glDeleteShader(vertexShader);

@@ -2,6 +2,11 @@
 
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <ctime>
+#include <ratio>
+#include <iomanip>
+#include "terminalColors.h""
 #include "objects.h"
 #include "obj.h"
 
@@ -14,13 +19,17 @@ Objects::Objects() {
 
 	int textureUnits;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
-	std::cout << "Max " << textureUnits << " texture units" << std::endl;
+	//std::cout << "Max " << textureUnits << " texture units" << std::endl;
 
 	//shaderProgram = shaderProgram;
 }
 
 
-int Objects::createFromFile(const char* filePath, std::string name) {
+int Objects::createFromFile(std::string filePath, std::string name) {
+	std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+
+	std::cout << std::endl;
+
 	Data object; // create object struct
 
 	object.name = name;
@@ -31,7 +40,7 @@ int Objects::createFromFile(const char* filePath, std::string name) {
 
 	int meshSuccess;
 	mesh = genMeshFromFile(filePath, meshSuccess, object.size);
-	if (!meshSuccess) std::cout << "Mesh for \"" << name << "\" could not be generated";
+	if (!meshSuccess) std::cout << color::error << "Mesh for \"" << name << "\" could not be generated" << color::std << std::endl;
 
 
 	std::vector<OBJmaterial> matData = getMatData(filePath, meshSuccess); // get material data
@@ -59,22 +68,23 @@ int Objects::createFromFile(const char* filePath, std::string name) {
 		}
 		if (!matData[i].diffuseFile.empty()) {
 			textures->newTexture(matData[i].diffuseFile.c_str(), matData[i].diffuseFile, 0, GL_REPEAT, GL_NEAREST);
-			std::cout << "Texture " << matData[i].diffuseFile.c_str() << std::endl;
+			//std::cout << "Texture " << matData[i].diffuseFile.c_str() << std::endl;
 			mat.diffuseTextureName = matData[i].diffuseFile;
-			std::cout << "Creating texture " << matData[i].diffuseFile << std::endl;
+			//std::cout << "Creating texture " << matData[i].diffuseFile << std::endl;
 		}
 		if (!matData[i].specularFile.empty()) {
 			textures->newTexture(matData[i].specularFile.c_str(), matData[i].specularFile, 1, GL_REPEAT, GL_NEAREST);
 			mat.specularTextureName = matData[i].specularFile;
-			std::cout << "Creating texture " << matData[i].specularFile << std::endl;
+			//std::cout << "Creating texture " << matData[i].specularFile << std::endl;
 		}
 
 		object.materials.push_back(mat);
 	}
 
+	std::cout << "Getting material indexes for " << color::file << "\"" << filePath << "\"" << color::std << std::endl;
 	object.index = getMatIndexes(filePath, meshSuccess); // get material indexes
 
-
+	std::cout << color::process << "Buffering data" << color::std << std::endl;
 	glBindBuffer(GL_ARRAY_BUFFER, object.VBO); // bind VBO
 	glBufferData(GL_ARRAY_BUFFER, mesh.size() * sizeof(float), &mesh[0], GL_STATIC_DRAW); // Buffer mesh in VBO
 
@@ -86,6 +96,14 @@ int Objects::createFromFile(const char* filePath, std::string name) {
 
 	mesh.clear();
 	mesh.shrink_to_fit();
+
+	std::cout << color::success << "Finished loading file " << color::file << "\"" << filePath << "\"" << color::std << std::endl;
+
+	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<float> time_span = std::chrono::duration_cast<std::chrono::duration<float>>(t2 - t1);
+
+	std::cout << "Time: " << color::value << std::fixed << std::setprecision(4) << time_span.count() << " seconds" << color::std << std::endl;
+
 
 	return true;
 

@@ -64,34 +64,7 @@ vec3 calcDirLight(DirLight light);
 
 void main() {
 	norm = normalize(Normal); // create normalized vertex normal
-//	vec3 lightDir = normalize(light.position - FragPos); // create normalized light direction vector
 	cameraDir = normalize(cameraPos - FragPos);
-//	vec3 reflectDir = reflect(-lightDir, norm);
-//	// the vector points from the fragment to the light source, because it will
-//	// be compared to the normalized vertex normal that points away from the vertex
-//
-//	// calculate light intensity
-//	float dist = length(light.position - FragPos);
-//	float intensity = 1.0 / (light.a * dist*dist + light.b * dist + light.c);
-//
-//
-//	vec3 ambient = light.ambient * texture(material.diffuse, texCoord).rgb; // create ambient fragment color
-//
-//	// create multiplier for diffuse scattering. Two vectors are dot producted together and
-//	// if the value < 0 it is discarded, you can't have a negative light value
-//	float diffMultiplier = max(dot(norm, lightDir), 0.0);
-//	vec3 diffuse = light.diffuse * diffMultiplier * texture(material.diffuse, texCoord).rgb;
-//
-//	// create multiplier for specular reflections. compares the vector from the camer to the
-//	// fragment and the reflection vector like in diffuse, but also raises it to a power to
-//	// simulate the smoothness of the surface
-//	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
-//	vec3 specular = light.specular * specMultiplier * texture(material.specular, texCoord).rgb;
-//
-////	vec3 outColor = objectColor * (ambient + diffuse + specular);
-//	vec3 outColor = (ambient + diffuse + specular) * intensity;
-//
-//	FragColor = vec4(outColor, 1.0);
 
 	vec3 outColor;
 
