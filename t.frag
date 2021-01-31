@@ -1,7 +1,8 @@
 #version 460 core
 
-#define MAX_POINT_LIGHTS 16
-#define NR_POINT_LIGHTS 2
+//#define MAX_POINT_LIGHTS 16
+//#define NR_POINT_LIGHTS 2
+#define GAMMA 2.2
 
 
 struct Material {
@@ -74,6 +75,8 @@ void main() {
 	for (uint i = 0; i < nrPointLights; ++i)
 		outColor += calcPointLight(light[i]);
 	
+	// gamma correction
+	outColor = pow(outColor, vec3(1.0/GAMMA));
 
 	FragColor = vec4(outColor, 1.0);
 
@@ -86,7 +89,8 @@ void main() {
 
 vec3 calcPointLight(Light light) {
 	vec3 lightDir = normalize(light.position - FragPos); // create normalized light direction vector
-	vec3 reflectDir = reflect(-lightDir, norm);
+//	vec3 reflectDir = reflect(-lightDir, norm);
+	vec3 midDir = normalize(lightDir + cameraDir);
 
 	vec3 ambient = light.ambient * material.ambient * texture(material.diffusetex, texCoord).rgb; // create ambient fragment color
 	
@@ -102,7 +106,8 @@ vec3 calcPointLight(Light light) {
 	// create multiplier for specular reflections. compares the vector from the camer to the
 	// fragment and the reflection vector like in diffuse, but also raises it to a power to
 	// simulate the smoothness of the surface
-	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
+//	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
+	float specMultiplier = pow(max(dot(norm, midDir), 0.0), material.smoothness);
 	vec3 specular = light.specular * specMultiplier * material.specular * texture(material.speculartex, texCoord).rgb;
 
 //	vec3 outColor = objectColor * (ambient + diffuse + specular);
@@ -116,7 +121,8 @@ vec3 calcPointLight(Light light) {
 
 vec3 calcDirLight(DirLight light) {
 	vec3 lightDir = normalize(-light.direction); // create normalized light direction vector
-	vec3 reflectDir = reflect(-lightDir, norm);
+//	vec3 reflectDir = reflect(-lightDir, norm);
+	vec3 midDir = normalize(lightDir + cameraDir);
 
 	vec3 ambient = light.ambient * material.ambient * texture(material.diffusetex, texCoord).rgb; // create ambient fragment color
 
@@ -128,7 +134,8 @@ vec3 calcDirLight(DirLight light) {
 	// create multiplier for specular reflections. compares the vector from the camer to the
 	// fragment and the reflection vector like in diffuse, but also raises it to a power to
 	// simulate the smoothness of the surface
-	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
+//	float specMultiplier = pow(max(dot(cameraDir, reflectDir), 0.0), material.smoothness);
+	float specMultiplier = pow(max(dot(norm, midDir), 0.0), material.smoothness);
 	vec3 specular = light.specular * specMultiplier * material.specular * texture(material.speculartex, texCoord).rgb;
 
 //	vec3 outColor = objectColor * (ambient + diffuse + specular);

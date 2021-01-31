@@ -33,6 +33,7 @@
 #include "objects.h"
 #include "obj.h"
 #include "terminalColors.h"
+#include "screen.h"
 
 
 //#define STB_IMAGE_IMPLEMENTATION
@@ -121,7 +122,7 @@ int main(int argc, char* argv[])
     objects.textures = &textures;
 
     //objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
-    objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing"); // create objects
+    objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
     objects.createFromFile("assets/cube/cube.obj", "light0"); // filepath, name
     objects.createFromFile("assets/cube/cube.obj", "light1");
     objects.createFromFile("assets/cube/cube2.obj", "cube");
@@ -132,10 +133,10 @@ int main(int argc, char* argv[])
     float lightColor[] = { 1.0f, 1.0f, 1.0f }; // test lighting and material colors
 
     struct Light {
-        float ambient[3] = { 0.05f, 0.05f, 0.05f };
-        float diffuse[3] = { 0.7f, 0.7f, 0.7f };
+        float ambient[3] = { 0.01f, 0.01f, 0.01f };
+        float diffuse[3] = { 0.5f, 0.5f, 0.5f };
         float specular[3] = { 1.0f, 1.0f, 1.0f };
-        float position[3] = { 12.0f, 24.0f, 5.0f };
+        float position[3] = { 12.0f, 13.0f, 7.0f };
         float position1[3] = { 12.0f, 4.0f, 5.0f };
 
         float a = 0.00007f;
@@ -224,7 +225,7 @@ int main(int argc, char* argv[])
     objectShader.vec3("material.diffuse", material.diffuse);
     objectShader.vec3("material.specular", material.specular);
     objectShader.setFloat("material.smoothness", material.smoothness);
-    objectShader.setUint("nrPointLights", 2);
+    objectShader.setUint("nrPointLights", 1);
 
     objectShader.vec3("light[0].ambient", light.ambient);
     objectShader.vec3("light[0].diffuse", light.diffuse);
@@ -234,13 +235,13 @@ int main(int argc, char* argv[])
     objectShader.setFloat("light[0].b", light.b);
     objectShader.setFloat("light[0].c", light.c);
 
-    objectShader.vec3("light[1].ambient", light.ambient);
-    objectShader.vec3("light[1].diffuse", light.diffuse);
-    objectShader.vec3("light[1].specular", light.specular);
-    objectShader.vec3("light[1].position", light.position1);
-    objectShader.setFloat("light[1].a", light.a);
-    objectShader.setFloat("light[1].b", light.b);
-    objectShader.setFloat("light[1].c", light.c);
+    //objectShader.vec3("light[1].ambient", light.ambient);
+    //objectShader.vec3("light[1].diffuse", light.diffuse);
+    //objectShader.vec3("light[1].specular", light.specular);
+    //objectShader.vec3("light[1].position", light.position1);
+    //objectShader.setFloat("light[1].a", light.a);
+    //objectShader.setFloat("light[1].b", light.b);
+    //objectShader.setFloat("light[1].c", light.c);
 
 
 
@@ -255,7 +256,7 @@ int main(int argc, char* argv[])
     textureShader.setInt("material.diffuse", 0);
     textureShader.setInt("material.specular", 1);
     textureShader.setFloat("material.smoothness", material.smoothness);
-    textureShader.setUint("nrPointLights", 2);
+    textureShader.setUint("nrPointLights", 1);
 
     textureShader.vec3("light[0].ambient", light.ambient);
     textureShader.vec3("light[0].diffuse", light.diffuse);
@@ -265,13 +266,13 @@ int main(int argc, char* argv[])
     textureShader.setFloat("light[0].b", light.b);
     textureShader.setFloat("light[0].c", light.c);
 
-    textureShader.vec3("light[1].ambient", light.ambient);
-    textureShader.vec3("light[1].diffuse", light.diffuse);
-    textureShader.vec3("light[1].specular", light.specular);
-    textureShader.vec3("light[1].position", light.position1);
-    textureShader.setFloat("light[1].a", light.a);
-    textureShader.setFloat("light[1].b", light.b);
-    textureShader.setFloat("light[1].c", light.c);
+    //textureShader.vec3("light[1].ambient", light.ambient);
+    //textureShader.vec3("light[1].diffuse", light.diffuse);
+    //textureShader.vec3("light[1].specular", light.specular);
+    //textureShader.vec3("light[1].position", light.position1);
+    //textureShader.setFloat("light[1].a", light.a);
+    //textureShader.setFloat("light[1].b", light.b);
+    //textureShader.setFloat("light[1].c", light.c);
 
 
 
@@ -285,8 +286,53 @@ int main(int argc, char* argv[])
 
     std::cout << color::success << "\nGraphics Loaded!" << color::std << std::endl;
 
-    
 
+
+
+
+    //----------FRAMEBUFFER----------//
+
+
+
+
+    //unsigned int FBO;
+    //glGenFramebuffers(1, &FBO);
+    //glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+    //unsigned int scrTex;
+    //glGenTextures(1, &scrTex);
+    //glBindTexture(GL_TEXTURE_2D, scrTex);
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wWidth, wHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //glBindTexture(GL_TEXTURE_2D, 0);
+    //
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scrTex, 0);
+
+    //unsigned int RBO;
+    //glGenRenderbuffers(1, &RBO);
+    //glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wWidth, wHeight);
+    //glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    //
+    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+    //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
+    //    std::cout << color::success << "Framebuffer created" << color::std << std::endl;
+    //}
+    //else {
+    //    std::cout << color::error << "Failed to create framebuffer" << color::std << std::endl;
+    //}
+
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, wWidth, wHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, scrTex, 0);
+
+    int screenSuccess;
+    Screen screen(wWidth, wHeight, screenSuccess);
+    if (!screenSuccess) return -1;
 
 
 
@@ -324,17 +370,17 @@ int main(int argc, char* argv[])
                     break;
 
                 default:
-                    std::cout << "Unhandled Window Event: " << color::value << event.window.type << color::std << std::endl;
+                    //std::cout << "Unhandled Window Event: " << color::value << event.window.type << color::std << std::endl;
                     break;
 
 
-
+                    
                 }
                 break;
 
 
             default:
-                std::cout << "Unhandled Event: " << color::value << event.type << color::std << std::endl;
+                //std::cout << "Unhandled Event: " << color::value << event.type << color::std << std::endl;
                 break;
 
             }
@@ -345,11 +391,12 @@ int main(int argc, char* argv[])
 
 
         // draw objects
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        screen.clear();
 
-        model = glm::translate(Identity, glm::vec3(-10.0f, 0.0f, 0.0f));
+        model = glm::translate(Identity, glm::vec3(-10.0f, 8.0f, 0.0f));
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
-        //model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
+        model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
         textureShader.use();
         textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();
@@ -359,9 +406,10 @@ int main(int argc, char* argv[])
         lightShader.use();
         lightShader.mat4("model", glm::value_ptr(lightMatrix));
         objects.drawLight("light0");
-        lightShader.mat4("model", glm::value_ptr(lightMatrix1));
-        objects.drawLight("light1");
+        //lightShader.mat4("model", glm::value_ptr(lightMatrix1));
+        //objects.drawLight("light1");
 
+        screen.swap();
         SDL_GL_SwapWindow(window);
 
 
@@ -388,6 +436,7 @@ int main(int argc, char* argv[])
     objectShader.close();
     textureShader.close();
     lightShader.close();
+    //glDeleteFramebuffers(1, &FBO);
     window = nullptr;
     renderer = nullptr;
     SDL_Quit();
@@ -479,13 +528,7 @@ int init() {
     glDisable(GL_CULL_FACE);
     //glCullFace(GL_FRONT);
     glEnable(GL_MULTISAMPLE);
-    //glDepthRange(0.0f, 2.0f);
-    //glCullFace(GL_FRONT_AND_BACK);
-    //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-
-    //glEnable(GL_LINE_SMOOTH);
-    //glEnable(GL_POLYGON_SMOOTH);
+    //glEnable(GL_FRAMEBUFFER_SRGB);
 
     return true;
 }

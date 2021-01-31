@@ -297,28 +297,43 @@ std::string getMTLfile(std::string filePath, int& success) {
     while (std::getline(f, line)) { // iterate over lines in file
         if (line.empty()) continue;
 
-        std::stringstream ss(line); // create stringstream from line data
-        std::vector<std::string> linevec; // create string vector
-        std::string tmp; // create temporary string for getline function
-        while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
-            linevec.push_back(tmp); // add tmp to vector
-        }
+        //std::stringstream ss(line); // create stringstream from line data
+        //std::vector<std::string> linevec; // create string vector
+        //std::string tmp; // create temporary string for getline function
+        //while (std::getline(ss, tmp, ' ')) { // iterate over line, using getline with ' ' delimiter
+        //    linevec.push_back(tmp); // add tmp to vector
+        //}
 
-        if (linevec[0] == "mtllib") {
+        //if (linevec[0] == "mtllib") {
+        //    success = true;
+        //    //std::cout << "MTL file name: " << linevec[1] << std::endl;
+        //    //f.close();
+        //    return linevec[1].c_str();
+        //}
+        //else if (linevec[0] == "usemtl") {
+        //    std::cout << color::error << "Couldn't find file for material \"" << linevec[1] << "\"" << color::std << std::endl;
+        //    //f.close();
+        //    return "";
+        //}
+
+        if (line.rfind("mtllib ") == 0) {
             success = true;
-            //std::cout << "MTL file name: " << linevec[1] << std::endl;
-            //f.close();
-            return linevec[1].c_str();
+            f.close();
+            int strPos = line.find(" ") + 1;
+            return line.substr(strPos, line.npos);
+
         }
-        else if (linevec[0] == "usemtl") {
-            std::cout << color::error << "Couldn't find file for material \"" << linevec[1] << "\"" << color::std << std::endl;
-            //f.close();
-            return "";
+        else if (line.find("usemtl ", 0) == 0) {
+            success = false;
+            f.close();
+            int strPos = line.find(" ") + 1;
+            std::cout << color::error << "Couldn't find file for material \"" << line.substr(strPos, line.npos) << "\"" << color::std << std::endl;
         }
 
     }
 
     f.close();
+    success = false;
 
     std::cout << color::error << "No mtl file found, using default parameters" << color::white << std::endl;
     return "";
