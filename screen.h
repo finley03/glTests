@@ -11,6 +11,8 @@ public:
 
 	void swap();
 
+	void close();
+
 	float clearColor[3] = { 0.1f, 0.1f, 0.1f };
 
 private:
@@ -20,7 +22,7 @@ private:
 
 	unsigned int VBO;
 
-	float vertices[24] = {
+	const float vertices[24] = {
 		1.0f, -1.0f, 1.0f, 0.0f,
 		-1.0f, -1.0f, 0.0f, 0.0f,
 		-1.0f, 1.0f, 0.0f, 1.0f,

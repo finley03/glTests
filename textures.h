@@ -11,6 +11,7 @@ public:
 	// create new texture from file. add variable name
 	int newTexture(
 		const char* fileName,
+		//std::string fileName,
 		std::string varName,
 		int textureUnit,
 		int textureWrap,

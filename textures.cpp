@@ -1,3 +1,5 @@
+//#define _CRTDBG_MAP_ALLOC
+
 #include <glad/glad.h>
 
 #include <iostream>
@@ -11,9 +13,12 @@
 
 
 
-
 int Texture::colorSpace(int nrChannels, int& variable) {
     switch (nrChannels) {
+    //case 2:
+    //    variable = GL_RG;
+    //    return true;
+
     case 3:
         variable = GL_RGB;
         return true;
@@ -48,8 +53,12 @@ int Texture::newTexture(const char* fileName, std::string varName, int textureUn
     int texWidth, texHeight, nrChannels;
     unsigned char* data = stbi_load(fileName, &texWidth, &texHeight, &nrChannels, 0);
 
+
     int cSpace;
-    if (!colorSpace(nrChannels, cSpace)) return false;
+    if (!colorSpace(nrChannels, cSpace)) {
+        stbi_image_free(data);
+        return false;
+    }
 
     if (data) { // add data to texture
         glTexImage2D(GL_TEXTURE_2D, 0, cSpace, texWidth, texHeight, 0, cSpace, GL_UNSIGNED_BYTE, data); //generate textures

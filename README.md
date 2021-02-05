@@ -3,6 +3,7 @@
 This is a basic opengl framework I'm slowly making. I wish to grow it into quite a capable program, although that will take time.
 
 The program is made to compile in Visual C++, although it may compile fine in others
+Note: program includes code for VC++ memory leak detection, this will need to be removed if you try and use a different compiler
 
 ### Dependancies:
 

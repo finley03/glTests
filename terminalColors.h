@@ -6,6 +6,8 @@
 #ifndef TERMINAL_COLORS
 #define TERMINAL_COLORS
 
+//#define _CRTDBG_MAP_ALLOC
+
 #include <sstream>
 
 namespace color {

@@ -1,3 +1,5 @@
+//#define _CRTDBG_MAP_ALLOC
+
 #include <glad/glad.h>
 
 #include <iostream>
@@ -17,8 +19,8 @@ Objects::Objects() {
 	// the program is currently only capable of working with
 	// one vertex array object
 
-	int textureUnits;
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
+	//int textureUnits;
+	//glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnits);
 	//std::cout << "Max " << textureUnits << " texture units" << std::endl;
 
 	//shaderProgram = shaderProgram;
@@ -183,6 +185,7 @@ void Objects::draw(std::string name) {
 			textureShader->vec3("material.ambient", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].ambient);
 			textureShader->vec3("material.diffuse", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].diffuse);
 			textureShader->vec3("material.specular", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].specular);
+			textureShader->setFloat("material.smoothness", shapes[shapeMap[name]].materials[shapes[shapeMap[name]].index[i + 1]].smoothness);
 			textureShader->setInt("material.diffusetex", 0);
 			textureShader->setInt("material.speculartex", 1);
 

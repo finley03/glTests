@@ -1,3 +1,5 @@
+//#define _CRTDBG_MAP_ALLOC
+
 #include <fstream>
 #include <iostream>
 #include <sstream>

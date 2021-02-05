@@ -1,3 +1,5 @@
+// Material fragment shader
+
 #version 460 core
 
 #define GAMMA 2.2

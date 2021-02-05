@@ -14,6 +14,12 @@
 //           https://free3d.com/3d-model/low-poly-male-26691.html
 
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+//#define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#define new DEBUG_NEW
 
 
 #include <iostream>
@@ -27,6 +33,7 @@
 #include <glm/glm.hpp> // gl mathematics library
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 #include "shaders.h"
 #include "textures.h"
@@ -79,7 +86,7 @@ int init();
 
 int main(int argc, char* argv[])
 {
-
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     //----------INIT AND CONFIGURE----------//
 
@@ -88,7 +95,8 @@ int main(int argc, char* argv[])
     if (!init()) return -1; // initialize window and opengl
 
 
-
+    //_CrtMemState s1;
+    //_CrtMemCheckpoint(&s1);
 
 
 
@@ -107,13 +115,24 @@ int main(int argc, char* argv[])
 
 
 
-        //----------SET UP TEXTURES----------//
+    //----------SET UP TEXTURES----------//
 
 
 
+    //class Test {
+    //public:
+    //    int stuff = 1;
+    //};
 
+    //Test test;
 
     Texture textures;
+
+    //int* ptr = new int;
+    //*ptr = -559038737;
+
+    //int* ptr2 = new int;
+    //*ptr2 = -559038737;
 
     Objects objects; // create objects class
 
@@ -122,21 +141,22 @@ int main(int argc, char* argv[])
     objects.textures = &textures;
 
     //objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
-    objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
+    objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing"); // create objects
+    objects.createFromFile("assets/floor/woodfloor.obj", "floor");
     objects.createFromFile("assets/cube/cube.obj", "light0"); // filepath, name
-    objects.createFromFile("assets/cube/cube.obj", "light1");
-    objects.createFromFile("assets/cube/cube2.obj", "cube");
+    //objects.createFromFile("assets/cube/cube.obj", "light1");
+    //objects.createFromFile("assets/cube/cube2.obj", "cube");
 
 
 
 
-    float lightColor[] = { 1.0f, 1.0f, 1.0f }; // test lighting and material colors
+    //float lightColor[] = { 1.0f, 1.0f, 1.0f }; // test lighting and material colors
 
     struct Light {
         float ambient[3] = { 0.01f, 0.01f, 0.01f };
         float diffuse[3] = { 0.5f, 0.5f, 0.5f };
         float specular[3] = { 1.0f, 1.0f, 1.0f };
-        float position[3] = { 12.0f, 13.0f, 7.0f };
+        float position[3] = { 12.0f, 13.0f, -3.0f };
         float position1[3] = { 12.0f, 4.0f, 5.0f };
 
         float a = 0.00007f;
@@ -144,16 +164,16 @@ int main(int argc, char* argv[])
         float c = 1.0f;
     };
 
-    struct Material {
-        float ambient[3] = { 0.02f, 0.02f, 0.02f };
-        float diffuse[3] = { 0.1f, 0.1f, 1.0f };
-        float specular[3] = { 0.5f, 0.5f, 0.5f };
-        float smoothness = 32.0f; // a higher number leads to smaller radius specular reflections
-    };
+    //struct Material {
+    //    float ambient[3] = { 0.02f, 0.02f, 0.02f };
+    //    float diffuse[3] = { 0.1f, 0.1f, 1.0f };
+    //    float specular[3] = { 0.5f, 0.5f, 0.5f };
+    //    float smoothness = 32.0f; // a higher number leads to smaller radius specular reflections
+    //};
 
-    Material material;
+    //Material material;
     Light light;
-    
+    //
 
 
 
@@ -171,18 +191,18 @@ int main(int argc, char* argv[])
     //glm::mat4 view = glm::mat4(1.0f); // create 4x4 identity matrix for global view
     //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
     //shaders.mat4("view", glm::value_ptr(view));
-    float cameraPosition[3] = { 0.0f, 10.0f, 45.0f };
+    float cameraPosition[3] = { -15.0f, 25.0f, 25.0f };
 
     glm::mat4 view = glm::mat4(1.0f); // set camera matrix
     view = glm::lookAt(
         //glm::vec3(0.0f, 10.0f, 45.0f), // position
         glm::make_vec3(cameraPosition),
-        glm::vec3(0.0f, 10.0f, 0.0f), // target
+        glm::vec3(0.0f, 5.0f, 0.0f), // target
         glm::vec3(0.0f, 1.0f, 0.0f) // up
     );
     //shaders.use();
     
-    //lightShader.use();
+    lightShader.use();
     
 
     glm::mat4 projection = glm::mat4(1.0f); // create 4x4 identity matrix for global view
@@ -221,10 +241,10 @@ int main(int argc, char* argv[])
     //objectShader.vec3("lightPos", light.position);
     objectShader.vec3("cameraPos", cameraPosition);
 
-    objectShader.vec3("material.ambient", material.ambient);
-    objectShader.vec3("material.diffuse", material.diffuse);
-    objectShader.vec3("material.specular", material.specular);
-    objectShader.setFloat("material.smoothness", material.smoothness);
+    //objectShader.vec3("material.ambient", material.ambient);
+    //objectShader.vec3("material.diffuse", material.diffuse);
+    //objectShader.vec3("material.specular", material.specular);
+    //objectShader.setFloat("material.smoothness", material.smoothness);
     objectShader.setUint("nrPointLights", 1);
 
     objectShader.vec3("light[0].ambient", light.ambient);
@@ -255,7 +275,7 @@ int main(int argc, char* argv[])
 
     textureShader.setInt("material.diffuse", 0);
     textureShader.setInt("material.specular", 1);
-    textureShader.setFloat("material.smoothness", material.smoothness);
+    //textureShader.setFloat("material.smoothness", material.smoothness);
     textureShader.setUint("nrPointLights", 1);
 
     textureShader.vec3("light[0].ambient", light.ambient);
@@ -394,14 +414,19 @@ int main(int argc, char* argv[])
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         screen.clear();
 
-        model = glm::translate(Identity, glm::vec3(-10.0f, 8.0f, 0.0f));
+        model = glm::translate(Identity, glm::vec3(-10.0f, 2.0f, 0.0f));
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
         textureShader.use();
         textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();
         objectShader.mat4("model", glm::value_ptr(model));
         objects.draw("thing");
+
+        model = glm::scale(Identity, glm::vec3(15.0f, 15.0f, 15.0f));
+        textureShader.use();
+        textureShader.mat4("model", glm::value_ptr(model));
+        objects.draw("floor");
 
         lightShader.use();
         lightShader.mat4("model", glm::value_ptr(lightMatrix));
@@ -432,14 +457,22 @@ int main(int argc, char* argv[])
     SDL_DestroyRenderer(renderer);
     objects.destroy("thing");
     objects.destroy("cube");
+    objects.destroy("light0");
     objects.terminate();
     objectShader.close();
     textureShader.close();
     lightShader.close();
+
+    //delete (textures);
+
+    //screen.close();
     //glDeleteFramebuffers(1, &FBO);
     window = nullptr;
     renderer = nullptr;
     SDL_Quit();
+
+    //_CrtMemDumpAllObjectsSince(&s1);
+    //_CrtDumpMemoryLeaks();
 
     return 0;
 }

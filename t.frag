@@ -1,3 +1,5 @@
+// Texture fragment shader
+
 #version 460 core
 
 //#define MAX_POINT_LIGHTS 16

@@ -1,3 +1,5 @@
+//#define _CRTDBG_MAP_ALLOC
+
 #include <iostream>
 #include <glad/glad.h>
 #include "screen.h"
@@ -79,4 +81,11 @@ void Screen::swap() {
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+void Screen::close() {
+    scrShader->close();
+    free(scrShader);
+    //delete scrShader;
 }
