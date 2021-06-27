@@ -95,9 +95,6 @@ int main(int argc, char* argv[])
     if (!init()) return -1; // initialize window and opengl
 
 
-    //_CrtMemState s1;
-    //_CrtMemCheckpoint(&s1);
-
 
 
     // create shader programs
@@ -119,20 +116,7 @@ int main(int argc, char* argv[])
 
 
 
-    //class Test {
-    //public:
-    //    int stuff = 1;
-    //};
-
-    //Test test;
-
     Texture textures;
-
-    //int* ptr = new int;
-    //*ptr = -559038737;
-
-    //int* ptr2 = new int;
-    //*ptr2 = -559038737;
 
     Objects objects; // create objects class
 
@@ -141,7 +125,8 @@ int main(int argc, char* argv[])
     objects.textures = &textures;
 
     //objects.createFromFile("assets/backpack/backpack.obj", "thing"); // create objects
-    objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing"); // create objects
+    //objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing"); // create objects
+    objects.createFromFile("assets/MaleLow/MaleLow.obj", "thing");
     objects.createFromFile("assets/floor/woodfloor.obj", "floor");
     objects.createFromFile("assets/cube/cube.obj", "light0"); // filepath, name
     //objects.createFromFile("assets/cube/cube.obj", "light1");
@@ -149,8 +134,6 @@ int main(int argc, char* argv[])
 
 
 
-
-    //float lightColor[] = { 1.0f, 1.0f, 1.0f }; // test lighting and material colors
 
     struct Light {
         float ambient[3] = { 0.01f, 0.01f, 0.01f };
@@ -164,14 +147,7 @@ int main(int argc, char* argv[])
         float c = 1.0f;
     };
 
-    //struct Material {
-    //    float ambient[3] = { 0.02f, 0.02f, 0.02f };
-    //    float diffuse[3] = { 0.1f, 0.1f, 1.0f };
-    //    float specular[3] = { 0.5f, 0.5f, 0.5f };
-    //    float smoothness = 32.0f; // a higher number leads to smaller radius specular reflections
-    //};
 
-    //Material material;
     Light light;
     //
 
@@ -315,44 +291,19 @@ int main(int argc, char* argv[])
 
 
 
-    //unsigned int FBO;
-    //glGenFramebuffers(1, &FBO);
-    //glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-    //unsigned int scrTex;
-    //glGenTextures(1, &scrTex);
-    //glBindTexture(GL_TEXTURE_2D, scrTex);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, wWidth, wHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //glBindTexture(GL_TEXTURE_2D, 0);
-    //
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, scrTex, 0);
-
-    //unsigned int RBO;
-    //glGenRenderbuffers(1, &RBO);
-    //glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-    //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, wWidth, wHeight);
-    //glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    //
-    //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
-    //if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE) {
-    //    std::cout << color::success << "Framebuffer created" << color::std << std::endl;
-    //}
-    //else {
-    //    std::cout << color::error << "Failed to create framebuffer" << color::std << std::endl;
-    //}
-
-    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, wWidth, wHeight, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, scrTex, 0);
 
     int screenSuccess;
     Screen screen(wWidth, wHeight, screenSuccess);
     if (!screenSuccess) return -1;
+
+
+    //screen.clear();
+    //screen.swap();
+    //SDL_GL_SwapWindow(window);
+
+    //SDL_Delay(5000);
+    //return 0;
 
 
 
@@ -414,9 +365,10 @@ int main(int argc, char* argv[])
         //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         screen.clear();
 
-        model = glm::translate(Identity, glm::vec3(-10.0f, 2.0f, 0.0f));
+        model = glm::translate(Identity, glm::vec3(-7.0f, 5.0f, 0.0f)); // -10.0f, 2.0f, 0.0f
         model = glm::rotate(model, tUnix/3, glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+        //model = glm::translate(model, glm::vec3());
+        model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f));
         textureShader.use();
         textureShader.mat4("model", glm::value_ptr(model));
         objectShader.use();

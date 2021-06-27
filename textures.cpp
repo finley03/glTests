@@ -49,7 +49,7 @@ int Texture::newTexture(const char* fileName, std::string varName, int textureUn
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureFilter); // set pixel filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureFilter);
 
-    //stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(true);
     int texWidth, texHeight, nrChannels;
     unsigned char* data = stbi_load(fileName, &texWidth, &texHeight, &nrChannels, 0);
 
